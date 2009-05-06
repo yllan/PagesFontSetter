@@ -70,6 +70,7 @@ BOOL isSurrogate(PagesCharacter *c)
 @synthesize documentLabel = _documentLabel;
 @synthesize progressBar = _progressBar;
 @synthesize progressWindow = _progressWindow;
+@synthesize mainWindow = _mainWindow;
 
 - (void) awakeFromNib
 {
@@ -150,7 +151,7 @@ BOOL isSurrogate(PagesCharacter *c)
 
 - (IBAction) setAllOpenedDocuments: (id)sender
 {
-    [NSApp beginSheet: _progressWindow modalForWindow: [NSApp mainWindow] modalDelegate: self didEndSelector: NULL contextInfo: nil];
+    [NSApp beginSheet: _progressWindow modalForWindow: _mainWindow modalDelegate: self didEndSelector: NULL contextInfo: nil];
     PagesApplication *pages = [SBApplication applicationWithBundleIdentifier: @"com.apple.iWork.Pages"];
     
     [self performSelectorInBackground: @selector(allDocumentsForApp:) withObject: pages];

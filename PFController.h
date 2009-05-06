@@ -17,6 +17,7 @@
     NSTextField *_documentLabel;
     NSProgressIndicator *_progressBar;
     NSWindow *_progressWindow;
+    NSWindow *_mainWindow;
 }
 
 @property (nonatomic, copy) NSString *latinFont;
@@ -25,6 +26,7 @@
 @property (nonatomic, retain) IBOutlet NSTextField *documentLabel;
 @property (nonatomic, retain) IBOutlet NSProgressIndicator *progressBar;
 @property (nonatomic, retain) IBOutlet NSWindow *progressWindow;
+@property (nonatomic, retain) IBOutlet NSWindow *mainWindow;
 
 @property BOOL needSetLatinFont;
 @property BOOL needSetCJKFont;
