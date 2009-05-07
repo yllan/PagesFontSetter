@@ -157,4 +157,59 @@ BOOL isSurrogate(PagesCharacter *c)
     [self performSelectorInBackground: @selector(allDocumentsForApp:) withObject: pages];
 }
 
+- (IBAction) setClipboard: (id)sender
+{
+    NSPasteboard *pb = [NSPasteboard generalPasteboard];
+    NSArray *types = [NSArray arrayWithObjects: NSRTFDPboardType, NSRTFPboardType, NSStringPboardType, nil];
+//    NSDictionary *backupPBContents = [NSMutableDictionary dictionary];
+//    
+//    for (NSString *type in [pb types]) {
+//        [backupPBContents setValue: [pb dataForType: type] forKey: type];
+//    }
+    
+    NSString *bestType = [pb availableTypeFromArray: types];
+
+    if ([bestType isEqualToString: NSRTFDPboardType] || [bestType isEqualToString: NSRTFPboardType] || [bestType isEqualToString: NSStringPboardType]) {
+        NSData *data = [pb dataForType: bestType];
+        NSAttributedString *attrString;
+        if ([bestType isEqualToString: NSStringPboardType])
+            attrString = [[[NSAttributedString alloc] initWithString: [pb stringForType: NSStringPboardType]] autorelease];
+        else if ([bestType isEqualToString: NSRTFDPboardType])
+            attrString = [[[NSAttributedString alloc] initWithRTFD: data documentAttributes: NULL] autorelease];
+        else
+            attrString = [[[NSAttributedString alloc] initWithRTF: data documentAttributes: NULL] autorelease];
+
+        NSMutableAttributedString *mutableAttrString = [[[NSMutableAttributedString alloc] initWithAttributedString: attrString] autorelease];
+        NSString *plainString = [mutableAttrString string];
+        NSUInteger cursor = 0;
+        
+        while (cursor < [plainString length]) {
+            NSRange range = [plainString rangeOfComposedCharacterSequenceAtIndex: cursor];
+            NSUInteger codepoint = 0;
+            if (range.length == 1) {
+                codepoint = [plainString characterAtIndex: cursor];
+            } else if (range.length == 2) { // Surrogate Pair
+                codepoint = decodeSurrogate([plainString characterAtIndex: cursor], [plainString characterAtIndex: cursor + 1]);
+            }
+            
+            if ((isCJK(codepoint) && self.needSetCJKFont) || (!isCJK(codepoint) && self.needSetLatinFont)) {
+                NSMutableDictionary *attrDictionary = [NSMutableDictionary dictionaryWithDictionary: [mutableAttrString attributesAtIndex: cursor effectiveRange: NULL]];
+                NSFont *font = [attrDictionary valueForKey: NSFontAttributeName];
+                NSFont *replacedFont = [NSFont fontWithName: isCJK(codepoint) ? self.cjkFont : self.latinFont size: font ? [font pointSize] : 12.0];
+                [attrDictionary setValue: replacedFont forKey: NSFontAttributeName];
+                [mutableAttrString setAttributes: attrDictionary range: range];
+            }
+            cursor += range.length;
+        }
+        
+        [pb declareTypes: types owner: self];
+        
+        [pb setData: [mutableAttrString RTFDFromRange: NSMakeRange(0, [plainString length]) documentAttributes: nil] forType: NSRTFDPboardType];
+        [pb setData: [mutableAttrString RTFFromRange: NSMakeRange(0, [plainString length]) documentAttributes: nil] forType: NSRTFPboardType];
+        [pb setString: plainString forType: NSStringPboardType];
+    } else {
+        NSBeep();
+    }
+}
+
 @end

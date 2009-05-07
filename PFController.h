@@ -32,5 +32,6 @@
 @property BOOL needSetCJKFont;
 
 - (IBAction) setAllOpenedDocuments: (id)sender;
+- (IBAction) setClipboard: (id)sender;
 
 @end
