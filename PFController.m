@@ -42,7 +42,7 @@ BOOL isCJK(NSUInteger codepoint)
 
 unichar unicharOfPagesCharacter(PagesCharacter *c)
 {
-    return [[[c properties] objectForKey: @"contents"] characterAtIndex: 0];
+    return [(NSString *)[c get] characterAtIndex: 0];
 }
 
 BOOL isFirstSurrogate(PagesCharacter *ch)
@@ -93,7 +93,7 @@ BOOL isSurrogate(PagesCharacter *c)
 - (void) setForDocument: (PagesDocument *)document
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
-    PagesText *text = document.bodyText;
+    PagesRichText *text = document.bodyText;
     NSUInteger charactersCount = [[text characters] count];
     NSUInteger i;
     
@@ -116,19 +116,19 @@ BOOL isSurrogate(PagesCharacter *c)
         PagesWord *containedLatinWord = nil;
         if (!isCJK(codepoint) && [[character words] count] == 1) {
             containedLatinWord = [[character words] objectAtIndex: 0];
-            i += [containedLatinWord length] - 1;
+            i += [containedLatinWord.characters count] - 1;
         }
         
         if (isCJK(codepoint) && !self.needSetCJKFont) continue;
         if (!isCJK(codepoint) && !self.needSetLatinFont) continue;
         
         if (isCJK(codepoint)) {
-            character.fontName = self.cjkFont;
-            highSurrogateChar.fontName = self.cjkFont;
+            character.font = self.cjkFont;
+            highSurrogateChar.font = self.cjkFont;
         } else {
-            character.fontName = self.latinFont;
-            highSurrogateChar.fontName = self.latinFont;
-            containedLatinWord.fontName = self.latinFont;
+            character.font = self.latinFont;
+            highSurrogateChar.font = self.latinFont;
+            containedLatinWord.font = self.latinFont;
         }
         highSurrogateChar = nil;
     }

@@ -14,3 +14,9 @@ Requirements
 Issues
 -----------
 * Since it uses Scripting Bridge, its performance is terribly slow.
+
+Generate The Headers
+-----------
+```
+sdef /Applications/Pages.app | sdp -fh --basename Pages
+```
