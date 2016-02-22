@@ -235,6 +235,7 @@
 				GCC_PREFIX_HEADER = PagesFontSetter_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.yllan.${PRODUCT_NAME:identifier}";
 				PRODUCT_NAME = PagesFontSetter;
 				SDKROOT = macosx;
@@ -253,6 +254,7 @@
 				GCC_PREFIX_HEADER = PagesFontSetter_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.yllan.${PRODUCT_NAME:identifier}";
 				PRODUCT_NAME = PagesFontSetter;
 				SDKROOT = macosx;
